@@ -1,59 +1,132 @@
-/* KICK-OFF - Main Stylesheet */
+/* =================================
+   KICK-OFF | Korean Minimal Cafe
+================================= */
 
 :root {
-  --cream: #faf8f4;
-  --beige: #eee8de;
-  --brown: #8b7055;
-  --dark: #38332e;
-  --white: #ffffff;
+  --cream: #F8F5EF;
+  --beige: #E9DFD1;
+  --brown: #70533F;
+  --dark: #35291F;
+  --white: #FFFFFF;
+  --muted: #8B8177;
 }
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
-  font-family: Arial, sans-serif;
+  margin: 0;
   background: var(--cream);
   color: var(--dark);
-}
-
-button {
-  cursor: pointer;
-  font-family: inherit;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
 }
 
 .container {
-  width: 90%;
-  max-width: 1100px;
-  margin: auto;
+  width: min(100% - 36px, 1000px);
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  padding-top: 55px;
+  padding-bottom: 35px;
+}
+
+header h1 {
+  margin: 0;
+  color: var(--brown);
+  font-size: 38px;
+  letter-spacing: 5px;
+  font-weight: 700;
+}
+
+header p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  letter-spacing: 2px;
+  font-size: 13px;
+}
+
+#menu {
+  padding: 25px 0 60px;
 }
 
 .section-title {
   text-align: center;
-  letter-spacing: 3px;
-  margin-bottom: 25px;
+  color: var(--brown);
+  font-size: 25px;
+  margin-bottom: 30px;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
 }
 
 .product-card {
   background: var(--white);
-  border: 1px solid #eee5da;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 24px 20px;
+  border: 1px solid var(--beige);
+  box-shadow: 0 5px 18px rgba(80, 60, 40, 0.05);
+  transition: transform 0.2s ease;
 }
 
-.primary-button {
-  background: var(--brown);
-  color: var(--white);
-  border: none;
-  border-radius: 8px;
-  padding: 12px 20px;
+.product-card:hover {
+  transform: translateY(-4px);
 }
+
+.product-card h3 {
+  color: var(--brown);
+  font-size: 19px;
+  margin: 0 0 5px;
+}
+
+.product-card p {
+  margin: 5px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.product-card .product-price {
+  color: var(--brown);
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+footer {
+  text-align: center;
+  padding: 25px 0;
+  border-top: 1px solid var(--beige);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Mobile responsive */
 
 @media (max-width: 600px) {
   .container {
-    width: 92%;
+    width: calc(100% - 32px);
+  }
+
+  header {
+    padding-top: 40px;
+  }
+
+  header h1 {
+    font-size: 32px;
+  }
+
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .product-card {
+    padding: 20px;
   }
 }
