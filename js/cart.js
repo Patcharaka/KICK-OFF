@@ -1,19 +1,10 @@
-// ===================================
-// KICK-OFF SHOPPING CART
-// ระบบตะกร้าสินค้า
-// ===================================
-
 let cart = [];
 
+// เพิ่มสินค้าลงตะกร้า
 function addToCart(productId, size, sweetness) {
   const product = getProductById(productId);
 
-  if (!product) {
-    alert("ไม่พบสินค้า");
-    return;
-  }
-
-  if (product.available === false) {
+  if (!product || product.available === false) {
     alert("สินค้านี้ยังไม่เปิดให้สั่งซื้อ");
     return;
   }
@@ -21,25 +12,25 @@ function addToCart(productId, size, sweetness) {
   const price = getProductPrice(productId, size);
 
   if (price === null) {
-    alert("ไม่พบราคาสินค้าขนาดนี้");
+    alert("ไม่พบราคาสินค้า");
     return;
   }
 
-  const existingItem = cart.find(function(item) {
-    return item.productId === productId &&
-      item.size === size &&
-      item.sweetness === sweetness;
-  });
+  const existingItem = cart.find(item =>
+    item.productId === productId &&
+    item.size === size &&
+    item.sweetness === sweetness
+  );
 
   if (existingItem) {
     existingItem.quantity += 1;
   } else {
     cart.push({
-      productId: productId,
+      productId,
       name: product.name,
-      size: size,
-      sweetness: sweetness,
-      price: price,
+      size,
+      sweetness,
+      price,
       quantity: 1
     });
   }
@@ -47,44 +38,86 @@ function addToCart(productId, size, sweetness) {
   renderCart();
 }
 
+// เพิ่มจำนวนสินค้า
+function increaseQuantity(index) {
+  cart[index].quantity += 1;
+  renderCart();
+}
+
+// ลดจำนวนสินค้า
+function decreaseQuantity(index) {
+  cart[index].quantity -= 1;
+
+  if (cart[index].quantity <= 0) {
+    cart.splice(index, 1);
+  }
+
+  renderCart();
+}
+
+// ลบสินค้าออกจากตะกร้า
 function removeFromCart(index) {
   cart.splice(index, 1);
   renderCart();
 }
 
+// คำนวณยอดรวม
 function getCartTotal() {
-  return cart.reduce(function(total, item) {
-    return total + item.price * item.quantity;
-  }, 0);
+  return cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 }
 
+// แสดงรายการสินค้าในตะกร้า
 function renderCart() {
   const cartItems = document.getElementById("cart-items");
   const cartTotal = document.getElementById("cart-total");
   const cartCount = document.getElementById("cart-count");
 
-  if (!cartItems || !cartTotal || !cartCount) {
-    return;
-  }
+  if (!cartItems || !cartTotal || !cartCount) return;
 
   cartItems.innerHTML = "";
 
+  if (cart.length === 0) {
+    cartItems.innerHTML = "<p>ยังไม่มีสินค้าในตะกร้า</p>";
+  }
+
   cart.forEach(function(item, index) {
     const row = document.createElement("div");
-
     const name = document.createElement("p");
-    name.textContent =
-      item.name + " (" + item.size + ") x " + item.quantity;
-
     const sweetness = document.createElement("p");
-    sweetness.textContent = "ความหวาน " + item.sweetness + "%";
-
     const price = document.createElement("p");
+
+    name.textContent =
+      item.name + " (" + item.size + ")";
+
+    sweetness.textContent =
+      "ความหวาน " + item.sweetness + "%";
+
     price.textContent =
-      (item.price * item.quantity) + " บาท";
+      "ราคา " + (item.price * item.quantity) + " บาท";
+
+    const decreaseButton = document.createElement("button");
+    decreaseButton.textContent = "−";
+    decreaseButton.type = "button";
+    decreaseButton.addEventListener("click", function() {
+      decreaseQuantity(index);
+    });
+
+    const quantity = document.createElement("span");
+    quantity.textContent = " " + item.quantity + " ";
+
+    const increaseButton = document.createElement("button");
+    increaseButton.textContent = "+";
+    increaseButton.type = "button";
+    increaseButton.addEventListener("click", function() {
+      increaseQuantity(index);
+    });
 
     const removeButton = document.createElement("button");
-    removeButton.textContent = "ลบ";
+    removeButton.textContent = "ลบสินค้า";
+    removeButton.type = "button";
     removeButton.addEventListener("click", function() {
       removeFromCart(index);
     });
@@ -92,14 +125,18 @@ function renderCart() {
     row.appendChild(name);
     row.appendChild(sweetness);
     row.appendChild(price);
+    row.appendChild(decreaseButton);
+    row.appendChild(quantity);
+    row.appendChild(increaseButton);
     row.appendChild(removeButton);
 
     cartItems.appendChild(row);
   });
 
-  cartCount.textContent = cart.reduce(function(total, item) {
-    return total + item.quantity;
-  }, 0);
+  cartCount.textContent = cart.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   cartTotal.textContent = getCartTotal() + " บาท";
 }
